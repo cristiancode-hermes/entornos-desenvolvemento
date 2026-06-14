@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="gl" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📚 Entornos de Desenvolvemento — Estudo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f172a;
+    --bg2: #1e293b;
+    --bg3: #334155;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --primary-dark: #4f46e5;
+    --accent: #22d3ee;
+    --success: #22c55e;
+    --warning: #eab308;
+    --error: #ef4444;
+    --radius: 12px;
+    --shadow: 0 4px 6px -1px rgba(0,0,0,.3);
+  }
+  [data-theme="light"] {
+    --bg: #f8fafc;
+    --bg2: #ffffff;
+    --bg3: #e2e8f0;
+    --text: #1e293b;
+    --text2: #64748b;
+    --shadow: 0 4px 6px -1px rgba(0,0,0,.1);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background .3s, color .3s;
+  }
+  /* Layout */
+  .app-header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--bg3);
+    padding: 12px 20px;
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(12px);
+    background: rgba(30,41,59,.85);
+  }
+  .header-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .logo { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+  .logo span { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .xp-bar {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg3); padding: 4px 12px 4px 4px; border-radius: 20px;
+    font-size: 12px; font-weight: 600;
+  }
+  .xp-bar .level { background: var(--primary); color: #fff; border-radius: 20px; padding: 2px 10px; font-size: 11px; }
+  .xp-fill { height: 6px; background: var(--bg); border-radius: 3px; width: 80px; overflow: hidden; }
+  .xp-fill span { display: block; height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 3px; transition: width .5s; }
+  .theme-btn {
+    background: none; border: 1px solid var(--bg3); color: var(--text2);
+    width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+    font-size: 18px; display: flex; align-items: center; justify-content: center;
+    transition: all .2s;
+  }
+  .theme-btn:hover { border-color: var(--primary); color: var(--text); }
+  .container { max-width: 1100px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  /* Page sections */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* Home */
+  .hero { text-align: center; padding: 32px 0 24px; }
+  .hero h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+  .hero h1 span { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero p { color: var(--text2); font-size: 15px; max-width: 500px; margin: 0 auto; }
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px;
+    margin: 24px 0;
+  }
+  .stat-card {
+    background: var(--bg2); border: 1px solid var(--bg3); border-radius: var(--radius);
+    padding: 16px; text-align: center;
+  }
+  .stat-card .num { font-size: 28px; font-weight: 800; }
+  .stat-card .num.gold { color: var(--warning); }
+  .stat-card .num.green { color: var(--success); }
+  .stat-card .num.purple { color: var(--primary-light); }
+  .stat-card .num.cyan { color: var(--accent); }
+  .stat-card .label { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+  /* Topic cards */
+  .topic-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;
+    margin-top: 8px;
+  }
+  .topic-card {
+    background: var(--bg2); border: 1px solid var(--bg3); border-radius: var(--radius);
+    padding: 20px; cursor: pointer; transition: all .25s;
+    position: relative; overflow: hidden;
+  }
+  .topic-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow); }
+  .topic-card .icon { font-size: 32px; margin-bottom: 8px; }
+  .topic-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .topic-card p { font-size: 13px; color: var(--text2); line-height: 1.4; }
+  .topic-card .meta { display: flex; gap: 12px; margin-top: 12px; font-size: 11px; color: var(--text2); }
+  .topic-card .meta span { display: flex; align-items: center; gap: 4px; }
+  .topic-card .progress-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+  .topic-card .progress-dot.done { background: var(--success); }
+  .topic-card .progress-dot.partial { background: var(--warning); }
+  .topic-card .progress-dot.none { background: var(--bg3); }
+  .topic-card .badge {
+    position: absolute; top: 12px; right: 12px;
+    background: var(--primary); color: #fff; font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 10px;
+  }
+
+  /* Study view */
+  .back-btn {
+    background: none; border: none; color: var(--text2); cursor: pointer;
+    display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500;
+    padding: 8px 0; margin-bottom: 16px; transition: color .2s;
+  }
+  .back-btn:hover { color: var(--primary); }
+  .topic-header { margin-bottom: 20px; }
+  .topic-header h2 { font-size: 24px; font-weight: 800; }
+  .topic-header .subtitle { color: var(--text2); font-size: 14px; margin-top: 4px; }
+
+  /* Tabs */
+  .tabs {
+    display: flex; gap: 4px; background: var(--bg3); border-radius: var(--radius);
+    padding: 4px; margin-bottom: 20px; overflow-x: auto;
+  }
+  .tab {
+    padding: 8px 16px; border: none; background: none; color: var(--text2);
+    border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500;
+    white-space: nowrap; transition: all .2s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { background: var(--bg2); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Resumen sections */
+  .resumen-section { margin-bottom: 24px; }
+  .resumen-section h3 {
+    font-size: 18px; font-weight: 700; margin-bottom: 12px;
+    padding-bottom: 8px; border-bottom: 2px solid var(--primary);
+  }
+  .resumen-section h4 { font-size: 15px; font-weight: 600; margin: 16px 0 8px; color: var(--primary-light); }
+  .resumen-section p, .resumen-section li { font-size: 14px; line-height: 1.7; color: var(--text2); margin-bottom: 6px; }
+  .resumen-section ul, .resumen-section ol { padding-left: 20px; margin: 8px 0; }
+  .resumen-section strong { color: var(--text); }
+  .resumen-section .key-concept {
+    background: rgba(99,102,241,.1); border-left: 3px solid var(--primary);
+    padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 12px 0;
+  }
+  .resumen-section .key-concept p { margin: 0; color: var(--text); }
+  .resumen-section table {
+    width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px;
+  }
+  .resumen-section th, .resumen-section td {
+    border: 1px solid var(--bg3); padding: 8px 12px; text-align: left;
+  }
+  .resumen-section th { background: var(--bg3); color: var(--text); font-weight: 600; }
+  .resumen-section code {
+    background: var(--bg3); padding: 2px 6px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+  }
+  .resumen-section .tag {
+    display: inline-block; background: var(--bg3); padding: 2px 8px;
+    border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 4px;
+  }
+  .resumen-section .tag.blue { background: rgba(99,102,241,.2); color: var(--primary-light); }
+  .resumen-section .tag.green { background: rgba(34,197,94,.2); color: var(--success); }
+
+  /* Quiz */
+  .quiz-card {
+    background: var(--bg2); border: 1px solid var(--bg3); border-radius: var(--radius);
+    padding: 24px; margin-bottom: 16px;
+  }
+  .quiz-question { font-size: 16px; font-weight: 600; margin-bottom: 16px; line-height: 1.5; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-option {
+    padding: 12px 16px; border: 2px solid var(--bg3); border-radius: 8px;
+    background: none; color: var(--text); cursor: pointer; text-align: left;
+    font-size: 14px; transition: all .2s; font-family: inherit;
+  }
+  .quiz-option:hover { border-color: var(--primary); background: rgba(99,102,241,.05); }
+  .quiz-option.selected { border-color: var(--primary); background: rgba(99,102,241,.1); }
+  .quiz-option.correct { border-color: var(--success); background: rgba(34,197,94,.1); }
+  .quiz-option.wrong { border-color: var(--error); background: rgba(239,68,68,.1); }
+  .quiz-option:disabled { cursor: default; opacity: .7; }
+  .quiz-feedback { margin-top: 12px; padding: 12px; border-radius: 8px; font-size: 14px; display: none; }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.3); color: var(--success); }
+  .quiz-feedback.wrong { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); color: var(--error); }
+  .quiz-controls { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .btn {
+    padding: 10px 20px; border: none; border-radius: 8px; font-size: 14px;
+    font-weight: 600; cursor: pointer; transition: all .2s; font-family: inherit;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-secondary { background: var(--bg3); color: var(--text); }
+  .btn-secondary:hover { background: var(--text2); color: var(--bg); }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-success:hover { opacity: .9; }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+  .quiz-score {
+    text-align: center; padding: 32px;
+  }
+  .quiz-score .big { font-size: 48px; font-weight: 800; }
+  .quiz-score .big.gold { color: var(--warning); }
+  .quiz-score .big.green { color: var(--success); }
+  .quiz-score .big.red { color: var(--error); }
+  .quiz-progress {
+    display: flex; gap: 4px; margin-bottom: 16px; justify-content: center;
+  }
+  .quiz-progress .dot {
+    width: 24px; height: 6px; border-radius: 3px; background: var(--bg3); transition: background .3s;
+  }
+  .quiz-progress .dot.correct { background: var(--success); }
+  .quiz-progress .dot.wrong { background: var(--error); }
+  .quiz-progress .dot.current { background: var(--primary); }
+
+  /* Footer */
+  .footer { text-align: center; padding: 32px 0; color: var(--text2); font-size: 12px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text2); }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .container { padding: 16px 12px 40px; }
+    .hero h1 { font-size: 24px; }
+    .topic-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .tabs { font-size: 12px; }
+    .tab { padding: 6px 12px; }
+  }
+  /* Animation */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .page.active { animation: fadeIn .3s ease; }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="header-inner">
+    <div class="logo">📚 <span>ContornosDev</span></div>
+    <div class="header-right">
+      <div class="xp-bar" id="xp-bar">
+        <span class="level" id="level-badge">Lv.1</span>
+        <div class="xp-fill"><span id="xp-fill" style="width:0%"></span></div>
+        <span id="xp-text">0 XP</span>
+      </div>
+      <button class="theme-btn" id="theme-btn" title="Tema">🌙</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <h1><span>Entornos de Desenvolvemento</span></h1>
+    <p>Prepara o teu examen do martes 16 de xuño 🎯</p>
+  </div>
+
+  <div class="stats-grid" id="stats-grid">
+    <div class="stat-card"><div class="num purple" id="stat-studied">0</div><div class="label">Temas estudados</div></div>
+    <div class="stat-card"><div class="num cyan" id="stat-questions">0</div><div class="label">Preguntas feitas</div></div>
+    <div class="stat-card"><div class="num green" id="stat-correct">0</div><div class="label">Acertos</div></div>
+    <div class="stat-card"><div class="num gold" id="stat-streak">0</div><div class="label">Raia de acertos</div></div>
+  </div>
+
+  <div class="topic-grid" id="topic-grid">
+    <!-- Cards generated by JS -->
+  </div>
+</div>
+
+<!-- TOPIC VIEW -->
+<div class="page" id="page-topic">
+  <button class="back-btn" id="back-home">← Volver aos temas</button>
+  <div class="topic-header" id="topic-header">
+    <h2 id="topic-title"></h2>
+    <div class="subtitle" id="topic-subtitle"></div>
+  </div>
+
+  <div class="tabs" id="topic-tabs">
+    <button class="tab active" data-tab="resumen">📖 Resumo</button>
+    <button class="tab" data-tab="quiz">🧪 Preguntas</button>
+  </div>
+
+  <div class="tab-content active" id="tab-resumen">
+    <div id="resumen-content"></div>
+  </div>
+
+  <div class="tab-content" id="tab-quiz">
+    <div id="quiz-content"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  Feito con ❤️ para o examen do martes 🎯 · Contornos de Desenvolvemento
+</footer>
+
+</div><!-- /container -->
+
+<script>
+// ============================================================
+// DATA — Todos os temas con resumos e preguntas
+// ============================================================
+
+const TEMAS = [
+  {
+    id: 'tema2',
+    icon: '🖥️',
+    title: 'Tema 2 — Instalación e uso de Contornos de Desenvolvemento',
+    short: 'Instalación e uso de IDEs',
+    desc: 'IDEs: NetBeans, Eclipse, VS Code, IntelliJ Idea. Instalación, personalización, xestión de complementos.',
+    sections: ['Instalación de IDEs', 'Personalización', 'Automatización', 'Complementos'],
+    resumen: [
+      {
+        title: '1. Que é un IDE?',
+        content: `<p>Un <strong>contorno de desenvolvemento integrado (IDE)</strong> é unha aplicación que asiste ao programador na tarefa de deseñar e codificar software mediante ferramentas integradas. A característica principal é que os resultados dunha ferramenta poden ser utilizados por outra (integración).</p>
+        <div class="key-concept"><p>💡 <strong>Idea clave:</strong> Pódense facer moitas operacións sen saír da mesma aplicación e seguindo sempre a mesma forma de traballar (ventás, menús, atallos de teclado...)</p></div>
+        <p>Non é imprescindible — abonda cun editor de textos + tradutor — pero é moito mellor ter todo integrado.</p>`
+      },
+      {
+        title: '2. Funcións dun IDE',
+        content: `<ul>
+          <li><strong>Edición</strong>: resaltado de sintaxe, auto-completado, tabulación automática, marcar erros</li>
+          <li><strong>Análise estático</strong>: análise léxica, sintáctica e semántica en tempo de codificación</li>
+          <li><strong>Análise dinámico</strong>: avalía o comportamento en execución (tempo, memoria)</li>
+          <li><strong>Depuración</strong>: executa nun simulador de instrucións (ISS), puntos de interrupción</li>
+          <li><strong>Xeración de código executable</strong>: compiladores, intérpretes, máquinas virtuais. Pode ter <strong>compiladores cruzados</strong></li>
+          <li><strong>Probas</strong>: creación e execución de probas unitarias/de integración</li>
+          <li><strong>Control de versións</strong>: imprescindible en traballo colaborativo</li>
+          <li><strong>GUI Builder</strong>: construtor visual de interfaces gráficas</li>
+          <li><strong>Xeración de documentación</strong>: automática dende o código fonte</li>
+          <li><strong>Refactorización</strong>: cambiar a estrutura interna sen alterar o comportamento externo</li>
+        </ul>`
+      },
+      {
+        title: '3. IDEs máis empregados',
+        content: `<table>
+          <tr><th>IDE</th><th>Licenza</th><th>Linguaxes</th><th>Info</th></tr>
+          <tr><td><strong>NetBeans</strong></td><td>Libre (CDDL + GPL v2)</td><td>Java, PHP, C/C++, HTML, JS</td><td>Orixinalmente Xelfi (1996). Sun → Oracle → Apache. 18M+ descargas pero en declive</td></tr>
+          <tr><td><strong>Eclipse</strong></td><td>Libre (EPL v1.01)</td><td>Java, C, C++, Python, PHP, Ruby</td><td>IBM → Eclipse Foundation (2003). Superado en interface por VS Code/IntelliJ</td></tr>
+          <tr><td><strong>VS Code</strong></td><td>Gratuíto (open source)</td><td>Moitas (extensiones)</td><td>Microsoft. O máis usado hoxe. Moi extensible</td></tr>
+          <tr><td><strong>Visual Studio</strong></td><td>Propietaria ($$$)</td><td>C#, VB, C++, JScript</td><td>.NET Framework. Enterprise $5,999 / Professional $499-$1,199</td></tr>
+          <tr><td><strong>IntelliJ Idea</strong></td><td>Ultimate (pago) / Community (grátis)</td><td>Java e moitas máis</td><td>JetBrains. Familia: PhpStorm, PyCharm, WebStorm...</td></tr>
+          <tr><td><strong>XCode</strong></td><td>Grátis (só Mac)</td><td>Swift, Objective-C</td><td>Para iOS/macOS</td></tr>
+          <tr><td><strong>Android Studio</strong></td><td>Grátis</td><td>Kotlin, Java</td><td>Para Android</td></tr>
+        </table>`
+      },
+      {
+        title: '4. NetBeans — Instalación e uso',
+        content: `<p><strong>Requisito previo:</strong> JDK (Java Development Kit) — inclúe JRE + compilador Java.</p>
+        <p><strong>Instalación:</strong> descargar zip da páxina oficial, descomprimir. Configurar <code>netbeans.conf</code> coa ruta do JDK.</p>
+        <p><strong>Inicio:</strong> A páxina de inicio ten enlaces a información recente. Consta de: barra de menús, barra de ferramentas, ventá Proyectos, ventá Archivos, ventá Navegador.</p>
+        <p><strong>Proxecto novo:</strong> Archivo > Proyecto Nuevo. Tipos: Maven, Gradle, Ant. Ao crear un proxecto Java Ant, xa crea unha clase main().</p>
+        <p><strong>Executar:</strong> F6 compila e executa.</p>`
+      },
+      {
+        title: '5. Eclipse — Instalación e uso',
+        content: `<p>Descargar instalador de <code>eclipse.org/downloads</code>. Elixir "Java Developers".</p>
+        <p>Solicita a ubicación do JRE (JDK). Precisa Java 21 na versión actual.</p>
+        <p><strong>Proxecto novo:</strong> File > New > Java Project. Sobre `src` crear paquete > class con main(). Executar: Ctrl+F11.</p>
+        <div class="key-concept"><p>⚠️ <strong>Erro común:</strong> "Could not find or load main class" — Desmarcar "Use '--release' option" en propiedades > Java compiler.</p></div>`
+      },
+      {
+        title: '6. VS Code — Personalización con extensións',
+        content: `<p>VS Code ten un <strong>elevado número de extensións</strong> que permiten mellorar a produtividade e adaptalo ao estilo de cada programador.</p>
+        <p>Exemplos de extensións: GitHub Copilot, Prettier, ESLint, Python, Java Extension Pack, Live Server...</p>
+        <p><strong>Instalación:</strong> Icona de extensións (ou Ctrl+Shift+X) → buscar → instalar.</p>`
+      },
+      {
+        title: '7. IntelliJ Idea — Plugins',
+        content: `<p>IntelliJ Idea (JetBrains) é o IDE máis empregado actualmente para Java.</p>
+        <p>Versión <strong>Ultimate</strong> (pago) vs <strong>Community</strong> (gratuita, sen uso comercial).</p>
+        <p>Os <strong>plugins</strong> engaden funcionalidade: soporte para linguaxes, frameworks, integración con ferramentas.</p>
+        <p>JetBrains ofrece a versión Ultimate a profesores e estudantes sen custo.</p>`
+      }
+    ],
+    preguntas: [
+      { q: 'Que significan as siglas IDE?', opts: ['Integrated Development Environment', 'Internal Development Engine', 'Integrated Design Editor', 'Internet Development Environment'], ans: 0 },
+      { q: 'Cal é a característica máis importante dun IDE?', opts: ['Que é gratuíto', 'Que ten ferramentas integradas que se relacionan entre si', 'Que só funciona en Windows', 'Que non precisa instalación'], ans: 1 },
+      { q: 'Que fai o analizador estático de código?', opts: ['Executa o código e mide o tempo', 'Analiza o código en execución', 'Fai análise léxica, sintáctica e semántica en tempo de codificación', 'Xera documentación automática'], ans: 2 },
+      { q: 'Cal destes NON é un IDE?', opts: ['NetBeans', 'Eclipse', 'MySQL', 'IntelliJ Idea'], ans: 2 },
+      { q: 'Que licenza ten NetBeans?', opts: ['Só GPL v2', 'CDDL v1.0 e GPL v2 (dual)', 'Propietaria de Oracle', 'MIT'], ans: 1 },
+      { q: 'Que é un compilador cruzado?', opts: ['Un compilador que traduce a varias linguaxes', 'Un compilador para unha plataforma diferente da que funciona o IDE', 'Un compilador que funciona en rede', 'Un compilador que só compila código cruzado'], ans: 1 },
+      { q: 'Cal é a versión gratuíta de Visual Studio?', opts: ['Enterprise', 'Professional', 'Code', 'Ultimate'], ans: 2 },
+      { q: 'Que empresa desenvolveu orixinalmente Eclipse?', opts: ['Sun Microsystems', 'Microsoft', 'IBM', 'JetBrains'], ans: 2 },
+      { q: 'Que ferramenta de NetBeans permite ver a estrutura do código en árbore?', opts: ['Ventá Proyectos', 'Ventá Navegador', 'Ventá Archivos', 'Ventá Prestaciones'], ans: 1 },
+      { q: 'Que tipo de proxecto Java en NetBeans xa crea unha clase main()?', opts: ['Maven', 'Gradle', 'Ant', 'Todos'], ans: 2 }
+    ]
+  },
+  {
+    id: 'tema3',
+    icon: '🧪',
+    title: 'Tema 3 — Deseño e realización de probas',
+    short: 'Probas de software',
+    desc: 'Testing, depuración, probas unitarias, JUnit, JaCoCo, cobertura.',
+    sections: ['Introdución ás probas', 'Depuración', 'Probas unitarias', 'Cobertura'],
+    resumen: [
+      {
+        title: '1. Calidade do software',
+        content: `<p>A calidade é o grao no que o software cumpre con:</p>
+        <ul>
+          <li>Requisitos funcionais establecidos co cliente</li>
+          <li>Estándares de desenvolvemento documentados</li>
+          <li>Características profesionais esperadas</li>
+        </ul>
+        <div class="key-concept"><p>🔍 <strong>Verificación:</strong> Construír o produto correctamente<br>
+        🔍 <strong>Validación:</strong> Construír o produto correcto (o que realmente quere o usuario)</p></div>`
+      },
+      {
+        title: '2. Estándares e certificacións',
+        content: `<table>
+          <tr><th>Organización</th><th>Rol</th><th>Normas destacadas</th></tr>
+          <tr><td><strong>ISO</strong></td><td>Normalización internacional</td><td>ISO 9001:2015, ISO 9000:2015</td></tr>
+          <tr><td><strong>IEC</strong></td><td>Normalización eléctrica/electrónica</td><td>ISO/IEC 90003:2014 (software)</td></tr>
+          <tr><td><strong>AENOR</strong></td><td>Normalización en España</td><td>Normas UNE</td></tr>
+          <tr><td><strong>IEEE</strong></td><td>Asociación técnico-profesional mundial</td><td>IEEE 829 (doc. de probas), IEEE 1008 (probas unitarias), IEEE 1012 (V&V)</td></tr>
+        </table>`
+      },
+      {
+        title: '3. Tipos de probas',
+        content: `<ul>
+          <li><strong>Funcionais / Non funcionais</strong>: comproban requisitos funcionais vs rendemento, usabilidade</li>
+          <li><strong>Manuais / Automáticas</strong>: con plan detallado vs proceso automático repetible</li>
+          <li><strong>Dinámicas / Estáticas</strong>: executando o código vs analizando sen execución</li>
+          <li><strong>Caixa negra (Black Box)</strong>: proba a interface externa, entradas → saídas esperadas. Non se coñece a implementación interna</li>
+          <li><strong>Caixa branca (White Box)</strong>: proba a lóxica interna, camiños do código, estrutura</li>
+        </ul>
+        <div class="key-concept"><p>🎯 <strong>Obxectivo:</strong> Probar se o software <strong>non fai</strong> o que debe, e probar se o software <strong>fai o que non debe</strong> (efectos secundarios). Unha proba é un éxito se descobre un defecto.</p></div>`
+      },
+      {
+        title: '4. Probas unitarias',
+        content: `<p>Son probas funcionais realizadas por persoal técnico para detectar problemas nun <strong>módulo individual</strong> (un método, unha clase).</p>
+        <p>Usan técnicas de <strong>caixa branca</strong> (estrutura do código) e <strong>caixa negra</strong> (entradas/saídas).</p>
+        <p>A porcentaxe de código probado chámase <strong>cobertura</strong>.</p>
+        <p><strong>Ferramentas (familia XUnit):</strong> JUnit (Java), CppUnit (C++), PhpUnit (PHP), NUnit (.NET)</p>
+        <p><strong>Ferramenta de cobertura:</strong> JaCoCo (Java Code Coverage)</p>`
+      },
+      {
+        title: '5. Probas de integración',
+        content: `<p>Detectan problemas entre módulos relacionados (ya probados individualmente).</p>
+        <p><strong>Integración incremental ascendente (Bottom-Up):</strong></p>
+        <ol>
+          <li>Comezar polos módulos de nivel máis baixo</li>
+          <li>Escribir <strong>drivers</strong> (módulos impulsores) que simulan as chamadas dos pais</li>
+          <li>Substituír drivers por módulos reais</li>
+        </ol>
+        <p><strong>Integración incremental descendente (Top-Down):</strong></p>
+        <ol>
+          <li>Comezar polo módulo raíz</li>
+          <li>Escribir <strong>stubs</strong> (ficticios) que simulan os fillos</li>
+          <li>Substituír stubs por módulos reais</li>
+        </ol>
+        <p><strong>Integración non incremental (Big Bang):</strong> probar cada módulo por separado e montar todo á vez.</p>`
+      },
+      {
+        title: '6. Depuración (Debugging)',
+        content: `<p>Permite executar o código de maneira controlada:</p>
+        <ul>
+          <li><strong>Puntos de interrupción (breakpoints):</strong> a execución párase nese punto</li>
+          <li><strong>Execución liña a liña (step over/into)</strong></li>
+          <li><strong>Inspección de variables e expresións</strong></li>
+          <li><strong>Pila de chamadas (call stack):</strong> qué funcións están en execución</li>
+          <li><strong>Modificación de variables en tempo real</strong></li>
+        </ul>`
+      },
+      {
+        title: '7. Técnicas de deseño de probas unitarias',
+        content: `<p><strong>Estruturais (caixa branca):</strong> baséanse no grafo de fluxo do programa:</p>
+        <ul>
+          <li><strong>Cobertura de sentencias:</strong> executar todas as sentencias polo menos unha vez</li>
+          <li><strong>Cobertura de decisións:</strong> cada decisión (if, while) debe avaliarse a true e false</li>
+          <li><strong>Cobertura de condicións:</strong> cada condición booleana individual debe ser true e false</li>
+          <li><strong>Cobertura de camiños:</strong> executar todos os camiños posibles do grafo</li>
+        </ul>
+        <p><strong>Funcionais (caixa negra):</strong></p>
+        <ul>
+          <li><strong>Particionamento de equivalencia:</strong> dividir as entradas en grupos equivalentes</li>
+          <li><strong>Análise de valores límite:</strong> probar os bordos dos intervalos</li>
+        </ul>
+        <p><strong>Aleatorias:</strong> casos de proba xerados ao chou.</p>`
+      },
+      {
+        title: '8. JUnit',
+        content: `<p>Framework de probas unitarias para Java. Características:</p>
+        <ul>
+          <li>Anotacións: <code>@Test</code>, <code>@BeforeEach</code>, <code>@AfterEach</code>, <code>@BeforeAll</code>, <code>@AfterAll</code></li>
+          <li>Asercións: <code>assertEquals()</code>, <code>assertTrue()</code>, <code>assertFalse()</code>, <code>assertNull()</code>, <code>assertThrows()</code></li>
+          <li>Integración con IDEs (NetBeans, Eclipse, IntelliJ, VS Code)</li>
+        </ul>
+        <div class="key-concept"><p>💡 <strong>Ciclo TDD:</strong> Escribir a proba → ver que falla (RED) → escribir código mínimo que pase (GREEN) → refactorizar</p></div>`
+      }
+    ],
+    preguntas: [
+      { q: 'Que é unha proba unitaria?', opts: ['Unha proba de todo o sistema', 'Unha proba dun módulo individual (método/clase)', 'Unha proba de rendemento', 'Unha proba de integración'], ans: 1 },
+      { q: 'Que significa "cobertura" en probas?', opts: ['O número de erros atopados', 'A porcentaxe de código probado mediante probas unitarias', 'O tempo que leva executar as probas', 'O número de programadores que fan as probas'], ans: 1 },
+      { q: 'Que tipo de proba usa a interface externa sen coñecer a implementación?', opts: ['Caixa branca', 'Caixa negra', 'Proba estática', 'Proba de integración'], ans: 1 },
+      { q: 'Cal destes é un framework de probas unitarias para Java?', opts: ['PhpUnit', 'NUnit', 'JUnit', 'CppUnit'], ans: 2 },
+      { q: 'Que é un stub nas probas de integración?', opts: ['Un módulo que simula chamadas a módulos fillos', 'Un módulo que simula chamadas do pai', 'Un erro no código', 'Unha ferramenta de depuración'], ans: 0 },
+      { q: 'Que norma IEEE trata sobre a documentación de probas de software?', opts: ['IEEE 1008', 'IEEE 829', 'IEEE 1012', 'IEEE 730'], ans: 1 },
+      { q: 'Que é a depuración (debugging)?', opts: ['Escribir o código fonte', 'Compilar o programa', 'Executar código de forma controlada para detectar erros', 'Xerar documentación'], ans: 2 },
+      { q: 'Cal é o obxectivo principal das probas?', opts: ['Demostrar que o software funciona', 'A detección de defectos', 'Comprobar a velocidade', 'Validar a documentación'], ans: 1 },
+      { q: 'Que fai un driver na integración Bottom-Up?', opts: ['Simula o módulo fillo', 'Simula a chamada do módulo pai', 'Elimina erros do código', 'Xera casos de proba'], ans: 1 },
+      { q: 'Que técnica de probas de caixa branca require executar todos os camiños posibles?', opts: ['Cobertura de sentencias', 'Cobertura de decisións', 'Cobertura de camiños', 'Cobertura de condicións'], ans: 2 }
+    ]
+  },
+  {
+    id: 'tema4',
+    icon: '🔧',
+    title: 'Tema 4 — Optimización e documentación',
+    short: 'Refactorización, Git e documentación',
+    desc: 'Refactorización, patróns de deseño, analizador de código, control de versións con Git, Javadoc.',
+    sections: ['Refactorización', 'Patróns de deseño', 'Control de versións', 'Git', 'Documentación'],
+    resumen: [
+      {
+        title: '1. Refactorización',
+        content: `<p>"Modificar a estrutura interna do software co obxecto de que sexa máis fácil de entender e modificar no futuro, sen alterar o comportamento observable" (Fowler).</p>
+        <div class="key-concept"><p>🔧 <strong>Idea clave:</strong> refactorizar NON altera o comportamento externo pero mellora a estruturación interna.</p></div>
+        <p><strong>Vantaxes:</strong></p>
+        <ul>
+          <li>Facilita a comprensión do código fonte</li>
+          <li>Reduce os erros</li>
+          <li>Permite programar máis rápido</li>
+          <li>Facilita os cambios</li>
+        </ul>
+        <p><strong>Limitacións:</strong></p>
+        <ul>
+          <li>Bases de datos: é custoso cambiar o esquema e migrar datos</li>
+          <li>Interfaces publicadas: non se pode modificar o código fonte dos clientes</li>
+        </ul>`
+      },
+      {
+        title: '2. Malos cheiros (Bad Smells)',
+        content: `<p>Síntomas que indican que se debe refactorizar:</p>
+        <ul>
+          <li><strong>Código duplicado:</strong> principal razón para refactorizar</li>
+          <li><strong>Método longo:</strong> métodos demasiado extensos</li>
+          <li><strong>Clase grande:</strong> moitas responsabilidades</li>
+          <li><strong>Lista de parámetros longa</strong></li>
+          <li><strong>Cirurxía con escopeta:</strong> un cambio obriga a modificar moitas clases</li>
+          <li><strong>Invexa de atributos</strong>: acceder a atributos doutra clase en vez da propia</li>
+          <li><strong>Grupo de datos:</strong> datos que sempre aparecen xuntos</li>
+        </ul>`
+      },
+      {
+        title: '3. Patróns de deseño',
+        content: `<p>Un <strong>patrón de deseño</strong> é unha forma estandarizada de solución de deseño dun problema recorrente en POO, xa probada con éxito e ben documentada.</p>
+        <p>Non é un esquema ríxido, necesita da creatividade do desenvolvedor.</p>
+        <p><strong>Obxectivos:</strong></p>
+        <ul>
+          <li>Evitar repetir procuras de solución</li>
+          <li>Crear catálogos de patróns</li>
+          <li>Vocabulario común entre deseñadores</li>
+        </ul>
+        <p><strong>Clasificacións de patróns:</strong></p>
+        <ul>
+          <li>Patróns de arquitectura</li>
+          <li>Patróns de deseño (GoF: 23 patróns)</li>
+          <li>Patróns de codificación / dialectos</li>
+          <li>Antipatróns (solucións que producen efectos negativos)</li>
+        </ul>
+        <p>Os patróns <strong>GoF</strong> (Gang of Four) clasifícanse en:</p>
+        <ul>
+          <li><span class="tag blue">Creacionais</span> — instanciación de obxectos (Singleton, Factory, Builder...)</li>
+          <li><span class="tag green">Estruturais</span> — combinar clases (Adapter, Proxy, Decorator...)</li>
+          <li><span class="tag blue">De comportamento</span> — fluxo de control (Observer, Strategy, Template...)</li>
+        </ul>`
+      },
+      {
+        title: '4. Control de versións',
+        content: `<p>O control de versións facilita a administración das distintas versións dun produto. É imprescindible en proxectos colaborativos.</p>
+        <p><strong>Operacións básicas:</strong></p>
+        <ul>
+          <li><strong>Check-out / Clone:</strong> obter unha copia do repositorio</li>
+          <li><strong>Commit:</strong> gardar cambios localmente</li>
+          <li><strong>Update / Pull:</strong> actualizar cos cambios remotos</li>
+          <li><strong>Push:</strong> enviar cambios locais ao repositorio remoto</li>
+          <li><strong>Branch:</strong> crear unha rama de traballo</li>
+          <li><strong>Merge:</strong> fusionar cambios dunha rama</li>
+          <li><strong>Tag:</strong> marcar unha versión concreta</li>
+        </ul>
+        <p><strong>Clasificación:</strong> Centralizado (CVS, SVN) vs Distribuído (Git, Mercurial)</p>`
+      },
+      {
+        title: '5. Git — Comandos básicos',
+        content: `<p><strong>Instalación:</strong> git-scm.com</p>
+        <p><strong>Configuración inicial:</strong></p>
+        <code>git config --global user.name "Nome"</code><br>
+        <code>git config --global user.email "email"</code>
+        <p><strong>Crear repositorio:</strong></p>
+        <code>git init</code> — inicia repositorio local<br>
+        <code>git clone &lt;url&gt;</code> — clona remoto
+        <p><strong>Operacións básicas:</strong></p>
+        <code>git status</code> — estado actual<br>
+        <code>git add .</code> — engadir cambios ao staging<br>
+        <code>git commit -m "mensaxe"</code> — gardar cambios<br>
+        <code>git push</code> — enviar ao remoto<br>
+        <code>git pull</code> — recibir do remoto<br>
+        <code>git log</code> — historial de commits<br>
+        <code>git diff</code> — diferenzas entre versións<br>
+        <code>git blame</code> — quen modificou cada liña<br>
+        <p><strong>Ramas:</strong></p>
+        <code>git branch &lt;nome&gt;</code> — crear rama<br>
+        <code>git checkout &lt;nome&gt;</code> — cambiar a rama<br>
+        <code>git merge &lt;rama&gt;</code> — fusionar rama<br>
+        <div class="key-concept"><p>⚠️ <strong>Conflitos:</strong> ocorren cando dúas ramas modifican a mesma liña do mesmo ficheiro. Resólvense manualmente.</p></div>`
+      },
+      {
+        title: '6. Documentación con Javadoc',
+        content: `<p>Javadoc xera documentación automática HTML dende comentarios no código fonte Java.</p>
+        <p><strong>Tipos de comentarios:</strong></p>
+        <code>// Comentario dunha liña</code><br>
+        <code>/* Comentario de varias liñas */</code><br>
+        <code>/** Comentario Javadoc */</code>
+        <p><strong>Etiquetas Javadoc:</strong></p>
+        <table>
+          <tr><th>Etiqueta</th><th>Descrición</th></tr>
+          <tr><td><code>@param</code></td><td>Describe un parámetro do método</td></tr>
+          <tr><td><code>@return</code></td><td>Describe o valor de retorno</td></tr>
+          <tr><td><code>@throws</code></td><td>Excepción que pode lanzar</td></tr>
+          <tr><td><code>@see</code></td><td>Referencia a outro elemento</td></tr>
+          <tr><td><code>@since</code></td><td>Desde que versión existe</td></tr>
+          <tr><td><code>@author</code></td><td>Autor da clase</td></tr>
+          <tr><td><code>@version</code></td><td>Versión actual</td></tr>
+          <tr><td><code>@deprecated</code></td><td>Indica que está obsoleto</td></tr>
+        </table>`
+      }
+    ],
+    preguntas: [
+      { q: 'Que é refactorizar?', opts: ['Engadir novas funcionalidades', 'Modificar a estrutura interna sen alterar o comportamento externo', 'Eliminar código', 'Compilar o programa'], ans: 1 },
+      { q: 'Cal é o principal motivo para refactorizar?', opts: ['Mellora o rendemento', 'Código duplicado', 'Engadir novas funcionalidades', 'Cambiar a interface de usuario'], ans: 1 },
+      { q: 'Que son os "bad smells"?', opts: ['Erros de compilación', 'Síntomas que indican que se debe refactorizar', 'Olor do hardware', 'Mensaxes de advertencia do compilador'], ans: 1 },
+      { q: 'Cantos patróns de deseño recolle o libro GoF?', opts: ['12', '23', '30', '15'], ans: 1 },
+      { q: 'Que comando de Git se usa para gardar cambios localmente?', opts: ['git push', 'git commit', 'git add', 'git clone'], ans: 1 },
+      { q: 'Que fai git merge?', opts: ['Crea unha nova rama', 'Fusiona os cambios dunha rama noutra', 'Elimina unha rama', 'Mostra as diferenzas'], ans: 1 },
+      { q: 'Que etiqueta Javadoc describe un parámetro?', opts: ['@return', '@param', '@throws', '@see'], ans: 1 },
+      { q: 'Que tipo de control de versións é Git?', opts: ['Centralizado', 'Distribuído', 'Local', 'Híbrido'], ans: 1 },
+      { q: 'Que fai git pull?', opts: ['Envía cambios ao remoto', 'Recibe cambios do remoto', 'Crea unha rama', 'Mostra o historial'], ans: 1 },
+      { q: 'Cando se produce un conflito en Git?', opts: ['Sempre que se fai merge', 'Cando dúas ramas modifican a mesma liña do mesmo ficheiro', 'Cando se fai push sen commit', 'Cando se borra unha rama'], ans: 1 }
+    ]
+  },
+  {
+    id: 'tema5',
+    icon: '📐',
+    title: 'Tema 5 — Elaboración de Diagramas de Clases',
+    short: 'UML — Diagramas de clases',
+    desc: 'OOP, UML, diagramas de clases, asociacións, herdanza, ferramentas UML.',
+    sections: ['OOP', 'UML', 'Diagramas de clases', 'Ferramentas'],
+    resumen: [
+      {
+        title: '1. Orientación a Obxectos (POO)',
+        content: `<p>A POO é un paradigma de programación. Un <strong>obxecto</strong> é a instancia dunha <strong>clase</strong>.</p>
+        <p><strong>Conceptos fundamentais:</strong></p>
+        <ul>
+          <li><strong>Clase:</strong> modelo para fabricar obxectos. Ten atributos (datos) e métodos (operacións)</li>
+          <li><strong>Obxecto:</strong> instancia concreta dunha clase</li>
+          <li><strong>Abstracción:</strong> modelar só os aspectos relevantes</li>
+          <li><strong>Encapsulación:</strong> ocultar os detalles internos, acceso controlado por propiedades/getters/setters</li>
+          <li><strong>Heranaza:</strong> unha clase filla herda atributos e métodos da clase pai</li>
+          <li><strong>Polimorfismo:</strong> un mesmo método pode ter diferentes comportamentos segundo a clase</li>
+        </ul>
+        <p><strong>Construtor:</strong> método que se executa ao crear un obxecto. Ten o mesmo nome da clase e non devolve nada.</p>
+        <p><strong>Recolector de lixo (Garbage Collector):</strong> Java e C# destruen automaticamente obxectos non referenciados.</p>`
+      },
+      {
+        title: '2. UML (Unified Modeling Language)',
+        content: `<p>Linguaxe de modelado unificado. Conxunto de notacións gráficas para describir software orientado a obxectos.</p>
+        <p><strong>Obxectivos:</strong> visualizar, especificar, construír e documentar os artefactos dun sistema.</p>
+        <p><strong>Tipos de diagramas UML:</strong></p>
+        <table>
+          <tr><th>Estruturais (estáticos)</th><th>Comportamento (dinámicos)</th></tr>
+          <tr><td>Diagrama de clases</td><td>Diagrama de casos de uso</td></tr>
+          <tr><td>Diagrama de obxectos</td><td>Diagrama de secuencia</td></tr>
+          <tr><td>Diagrama de compoñentes</td><td>Diagrama de actividades</td></tr>
+          <tr><td>Diagrama de despregamento</td><td>Diagrama de estados</td></tr>
+          <tr><td>Diagrama de paquetes</td><td>Diagrama de comunicación</td></tr>
+        </table>`
+      },
+      {
+        title: '3. Diagramas de clases',
+        content: `<p>Mostran a estrutura estática do sistema: clases, atributos, métodos e relacións entre elas.</p>
+        <p><strong>Representación dunha clase:</strong></p>
+        <pre>┌─────────────────┐
+│   NomeClase      │  ← Nome en negriña
+├─────────────────┤
+│ - atributo1     │  ← Atributos (- privado, + público, # protegido)
+│ + atributo2     │
+├─────────────────┤
+│ + metodo1()     │  ← Métodos
+│ - metodo2()     │
+└─────────────────┘</pre>
+        <p><strong>Visibilidade (niveis de acceso):</strong></p>
+        <ul>
+          <li><code>+</code> público — accesible desde calquera clase</li>
+          <li><code>-</code> privado — só accesible dende a propia clase</li>
+          <li><code>#</code> protexido — accesible desde a clase e subclases</li>
+        </ul>`
+      },
+      {
+        title: '4. Relacións entre clases',
+        content: `<table>
+          <tr><th>Relación</th><th>Notación</th><th>Descrición</th></tr>
+          <tr><td><strong>Asociación</strong></td><td>Liña simple</td><td>Relación estrutural. Pode ter nome, rol e multiplicidade (1, *, 0..*)</td></tr>
+          <tr><td><strong>Agregación</strong></td><td>Rombo baleiro ◇</td><td>Relación "todo-parte". As partes poden existir sen o todo (ex: Alumnos dunha Clase)</td></tr>
+          <tr><td><strong>Composición</strong></td><td>Rombo cheo ◆</td><td>Agregación forte. Se o todo se destrúe, as partes tamén (ex: Páxinas dun Libro)</td></tr>
+          <tr><td><strong>Heranaza / Xeneralización</strong></td><td>Frecha baleira △</td><td>Unha clase filla herda da clase pai</td></tr>
+          <tr><td><strong>Dependencia</strong></td><td>Frecha descontinua - - -></td><td>Unha clase usa temporalmente outra (ex: parámetro dun método)</td></tr>
+          <tr><td><strong>Realización</strong></td><td>Frecha descontinua baleira</td><td>Unha clase implementa unha interface</td></tr>
+        </table>
+        <div class="key-concept"><p>💡 <strong>Multiplicidade:</strong> 1 (un), * (moitos), 0..1 (cero ou un), 1..* (un ou moitos), 0..* (cero ou moitos)</p></div>`
+      },
+      {
+        title: '5. Ferramentas UML',
+        content: `<ul>
+          <li><strong>NetBeans UML Module:</strong> permite crear diagramas UML e xerar código Java</li>
+          <li><strong>Visual Paradigm:</strong> ferramenta profesional, versión gratuita limitada</li>
+          <li><strong>StarUML, Draw.io, LucidChart</strong></li>
+        </ul>
+        <p><strong>Criterios para elixir ferramenta UML:</strong></p>
+        <ul>
+          <li>Facilidade de uso</li>
+          <li>Compatibilidade coa linguaxe de programación</li>
+          <li>Xeración automática de código</li>
+          <li>Traballo colaborativo</li>
+          <li>Custo</li>
+        </ul>`
+      }
+    ],
+    preguntas: [
+      { q: 'Que significa UML?', opts: ['Unified Modeling Language', 'Universal Markup Language', 'User Mode Logic', 'Unified Method Language'], ans: 0 },
+      { q: 'Que é un obxecto en POO?', opts: ['Unha variable', 'A instancia dunha clase', 'Un método', 'Un atributo'], ans: 1 },
+      { q: 'Que símbolo se usa para indicar visibilidade privada nun diagrama de clases?', opts: ['+', '-', '#', '~'], ans: 1 },
+      { q: 'Que relación representa un rombo baleiro (◇)?', opts: ['Composición', 'Heranaza', 'Agregación', 'Dependencia'], ans: 2 },
+      { q: 'Que relación indica que se o todo se destrúe, as partes tamén?', opts: ['Agregación', 'Composición', 'Asociación', 'Dependencia'], ans: 1 },
+      { q: 'Que fai un constructor?', opts: ['Destrúe o obxecto', 'Inicializa os datos do obxecto ao crealo', 'Modifica un atributo', 'Chama a un método'], ans: 1 },
+      { q: 'Cales son os 3 pilares da POO?', opts: ['Encapsulación, Heranaza, Polimorfismo', 'Clase, Obxecto, Método', 'If, For, While', 'Público, Privado, Protexido'], ans: 0 },
+      { q: 'Que multiplicidade indica "cero ou moitos"?', opts: ['1', '*', '0..1', '0..*'], ans: 3 },
+      { q: 'Que tipo de diagrama UML é o diagrama de clases?', opts: ['De comportamento', 'Estrutural', 'De interacción', 'De casos de uso'], ans: 1 },
+      { q: 'Que representa unha frecha baleira (△) nun diagrama de clases?', opts: ['Asociación', 'Dependencia', 'Heranaza', 'Agregación'], ans: 2 }
+    ]
+  },
+  {
+    id: 'tema6',
+    icon: '🔄',
+    title: 'Tema 6 — Elaboración de Diagramas de Comportamento',
+    short: 'UML — Diagramas de comportamento',
+    desc: 'Casos de uso, diagramas de secuencia, comunicación, estados e actividades.',
+    sections: ['Casos de uso', 'Secuencia', 'Comunicación', 'Estados', 'Actividades'],
+    resumen: [
+      {
+        title: '1. Diagramas de comportamento UML',
+        content: `<p>Os diagramas de comportamento mostran a <strong>conduta en tempo de execución</strong> do sistema: fluxo de mensaxes, estados, interaccións.</p>
+        <p><strong>Tipos:</strong></p>
+        <ul>
+          <li>Diagramas de <strong>casos de uso</strong> — qué fai o sistema dende o punto de vista do usuario</li>
+          <li>Diagramas de <strong>actividade</strong> — fluxo de procesos de negocio</li>
+          <li>Diagramas de <strong>máquina de estados</strong> — estados polos que pasa un obxecto</li>
+          <li>Diagramas de <strong>interacción</strong>:
+            <ul>
+              <li>Diagramas de secuencia — intercambio de mensaxes no tempo</li>
+              <li>Diagramas de comunicación — interacción entre obxectos</li>
+              <li>Diagramas de tempo — cambios de estado no tempo</li>
+              <li>Diagramas de resumo de interacción — fluxo de control</li>
+            </ul>
+          </li>
+        </ul>`
+      },
+      {
+        title: '2. Diagramas de casos de uso',
+        content: `<p>Modelan os <strong>requisitos funcionais</strong> do sistema dende o punto de vista do usuario.</p>
+        <p>Deben dicir <strong>QUE</strong> comportamento se espera, non <strong>COMO</strong> se fai.</p>
+        <p><strong>Elementos:</strong></p>
+        <ul>
+          <li><strong>Actor:</strong> rol que xoga un usuario ou outro sistema. Representado cun monicreque 🧑. Está fóra dos límites do sistema.</li>
+          <li><strong>Caso de uso:</strong> tarefa que se realiza no sistema. Elipse co nome (verbo).</li>
+          <li><strong>Límite do sistema:</strong> rectángulo que define o ámbito.</li>
+        </ul>
+        <p><strong>Relacións:</strong></p>
+        <table>
+          <tr><th>Relación</th><th>Notación</th><th>Descrición</th></tr>
+          <tr><td><strong>Asociación</strong></td><td>Liña continua</td><td>Un actor invoca un caso de uso</td></tr>
+          <tr><td><strong>Inclusión (<<include>>)</strong></td><td>Frecha descontinua</td><td>Un caso de uso inclúe funcionalidade doutro (é necesario que ocorra)</td></tr>
+          <tr><td><strong>Extensión (<<extend>>)</strong></td><td>Frecha descontinua</td><td>Un caso de uso amplía funcionalidade doutro (é opcional)</td></tr>
+          <tr><td><strong>Xeneralización</strong></td><td>Frecha baleira continua</td><td>Un caso de uso fillo herda e especializa o pai</td></tr>
+        </table>
+        <div class="key-concept"><p>💡 <strong>Diferenza <<include>> vs <<extend>>:</strong> Include é obrigatorio (sen iso non funciona). Extend é opcional (engade valor extra). Exemplo: "Realizar Venda" inclúe "Procesar Pago" (obrigatorio) e estende con "Acumular Puntos VIP" (opcional, só se é cliente VIP).</p></div>`
+      },
+      {
+        title: '3. Elaboración de diagramas de casos de uso',
+        content: `<p><strong>Pasos:</strong></p>
+        <ol>
+          <li>Identificar os <strong>actores</strong> (roles dos usuarios)</li>
+          <li>Identificar os <strong>obxectivos xerais</strong> e a partir deles os casos de uso</li>
+          <li>Establecer un proceso iterativo con <strong>include, extend, xeneralización</strong></li>
+          <li>Describir cada caso de uso con nome, actores, condicións previas, condicións posteriores, fluxo principal e fluxos alternativos</li>
+        </ol>
+        <p><strong>Recomendacións:</strong></p>
+        <ul>
+          <li>Non incluír operacións CRUD excepto se son relevantes</li>
+          <li>Evitar máis de dous niveis de relacións no mesmo diagrama</li>
+          <li>Non usar <<include>> para facer descomposición funcional</li>
+          <li>Centrarse na escritura (descrición) máis que no debuxo</li>
+        </ul>`
+      },
+      {
+        title: '4. Diagramas de secuencia',
+        content: `<p>Representan a <strong>interacción entre obxectos</strong> no tempo.</p>
+        <p><strong>Elementos:</strong></p>
+        <ul>
+          <li><strong>Liña de vida:</strong> rectángulo con nome do obxecto, liña descontinua vertical</li>
+          <li><strong>Mensaxe:</strong> frecha horizontal entre liñas de vida (con nome do método)</li>
+          <li><strong>Barra de activación:</strong> rectángulo fino sobre a liña de vida indicando cando está activo</li>
+          <li><strong>Mensaxes síncronas:</strong> frecha chea → (chamada bloqueante)</li>
+          <li><strong>Mensaxes asíncronas:</strong> frecha aberta → (non bloqueante)</li>
+          <li><strong>Mensaxe de retorno:</strong> frecha descontinua - -> (o método devolve o control)</li>
+          <li><strong>Fragmento combinado:</strong> rectángulo con etiquetas (alt = if/else, loop = bucle, opt = opcional)</li>
+        </ul>`
+      },
+      {
+        title: '5. Diagramas de comunicación',
+        content: `<p>Enfocan a interacción entre <strong>liñas de vida</strong> onde é central a <strong>arquitectura estrutural</strong>.</p>
+        <p>A secuencia das mensaxes dase a través dun <strong>esquema numerado</strong> (1, 1.1, 2...).</p>
+        <p><strong>Diferenza con secuencia:</strong> Os diagramas de secuencia enfocan o tempo (orde cronolóxica), mentres que os de comunicación enfocan a <strong>estrutura</strong> de obxectos e as súas conexións.</p>`
+      },
+      {
+        title: '6. Diagramas de estados',
+        content: `<p>Ilustran como un elemento (normalmente unha clase) se move entre <strong>estados</strong> segundo eventos.</p>
+        <p><strong>Elementos:</strong></p>
+        <ul>
+          <li><strong>Estado inicial:</strong> círculo cheo ●</li>
+          <li><strong>Estado:</strong> rectángulo con bordes redondeados</li>
+          <li><strong>Transición:</strong> frecha entre estados co evento que a dispara</li>
+          <li><strong>Estado final:</strong> círculo cheo dentro doutro ◉</li>
+        </ul>
+        <p><strong>Exemplo: Estado dunha Comanda</strong></p>
+        <p>● → Pendente → En preparación → Servida → Pechada → ◉</p>`
+      },
+      {
+        title: '7. Diagramas de actividades',
+        content: `<p>Representan <strong>procesos de negocio</strong> de alto nivel, incluído o fluxo de datos.</p>
+        <p><strong>Elementos:</strong></p>
+        <ul>
+          <li><strong>Nodo inicial:</strong> círculo cheo ●</li>
+          <li><strong>Acción:</strong> rectángulo con bordes redondeados</li>
+          <li><strong>Decisión:</strong> rombo (condición, ramificación)</li>
+          <li><strong>Barra de sincronización:</strong> liña grosa horizontal (fork/join para paralelismo)</li>
+          <li><strong>Nodo final:</strong> círculo cheo dentro doutro ◉</li>
+          <li><strong>Swimlanes (rúas):</strong> separan responsabilidades por actor</li>
+        </ul>`
+      }
+    ],
+    preguntas: [
+      { q: 'Que representan os diagramas de casos de uso?', opts: ['A estrutura das clases', 'Os requisitos funcionais dende o punto de vista do usuario', 'O fluxo de datos interno', 'A arquitectura do sistema'], ans: 1 },
+      { q: 'Que símbolo se usa para representar un actor?', opts: ['Unha elipse', 'Un monicreque (boneco)', 'Un rectángulo', 'Un rombo'], ans: 1 },
+      { q: 'Que indica a relación <<include>>?', opts: ['Que un caso de uso amplía outro (opcional)', 'Que un caso de uso inclúe a funcionalidade doutro (necesario)', 'Que un actor herda doutro', 'Que dous casos de uso son independentes'], ans: 1 },
+      { q: 'Que tipo de diagrama mostra o intercambio de mensaxes entre obxectos no tempo?', opts: ['Diagrama de clases', 'Diagrama de secuencia', 'Diagrama de casos de uso', 'Diagrama de actividades'], ans: 1 },
+      { q: 'Que elemento dos diagramas de estados representa o inicio?', opts: ['Un rectángulo', 'Un círculo cheo ●', 'Un rombo', 'Un círculo baleiro'], ans: 1 },
+      { q: 'Que representan os diagramas de actividades?', opts: ['A estrutura estática do sistema', 'Os procesos de negocio de alto nivel', 'Os casos de uso', 'A xerarquía de clases'], ans: 1 },
+      { q: 'Que diferenza hai entre <<include>> e <<extend>>?', opts: ['Include é para actores, extend para casos de uso', 'Include é obrigatorio, extend é opcional', 'Include é opcional, extend é obrigatorio', 'Son o mesmo'], ans: 1 },
+      { q: 'Que elemento dos diagramas de secuencia indica cando un obxecto está activo?', opts: ['A liña de vida', 'A barra de activación', 'A mensaxe', 'O fragmento combinado'], ans: 1 },
+      { q: 'Que é un swimlane nun diagrama de actividades?', opts: ['Unha acción', 'Unha rúa que separa responsabilidades por actor', 'Un estado', 'Unha transición'], ans: 1 },
+      { q: 'Que diagrama enfoca a estrutura de obxectos e as súas conexións (non o tempo)?', opts: ['Diagrama de secuencia', 'Diagrama de comunicación', 'Diagrama de estados', 'Diagrama de actividades'], ans: 1 }
+    ]
+  }
+];
+
+// ============================================================
+// APP STATE
+// ============================================================
+const STORAGE_KEY = 'entornos-dev-progress';
+
+let state = {
+  xp: 0,
+  level: 1,
+  streak: 0,
+  bestStreak: 0,
+  questionsAnswered: 0,
+  correctAnswered: 0,
+  studiedTopics: new Set(),
+  quizResults: {} // { temaId: { correct: N, total: N, answered: [true/false/...] } }
+};
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      state.xp = parsed.xp || 0;
+      state.level = parsed.level || 1;
+      state.streak = parsed.streak || 0;
+      state.bestStreak = parsed.bestStreak || 0;
+      state.questionsAnswered = parsed.questionsAnswered || 0;
+      state.correctAnswered = parsed.correctAnswered || 0;
+      state.studiedTopics = new Set(parsed.studiedTopics || []);
+      state.quizResults = parsed.quizResults || {};
+    }
+  } catch(e) {}
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    xp: state.xp,
+    level: state.level,
+    streak: state.streak,
+    bestStreak: state.bestStreak,
+    questionsAnswered: state.questionsAnswered,
+    correctAnswered: state.correctAnswered,
+    studiedTopics: [...state.studiedTopics],
+    quizResults: state.quizResults
+  }));
+}
+
+function addXP(amount) {
+  state.xp += amount;
+  while (state.xp >= state.level * 100) {
+    state.xp -= state.level * 100;
+    state.level++;
+  }
+  updateXPDisplay();
+  saveState();
+}
+
+function updateXPDisplay() {
+  const nextXP = state.level * 100;
+  const pct = Math.min(100, (state.xp / nextXP) * 100);
+  document.getElementById('xp-fill').style.width = pct + '%';
+  document.getElementById('xp-text').textContent = state.xp + '/' + nextXP + ' XP';
+  document.getElementById('level-badge').textContent = 'Lv.' + state.level;
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderHome() {
+  const grid = document.getElementById('topic-grid');
+  grid.innerHTML = '';
+  TEMAS.forEach((t, i) => {
+    const results = state.quizResults[t.id];
+    const totalQ = t.preguntas.length;
+    const doneQ = results ? results.answered.filter(Boolean).length : 0;
+    const isStudied = state.studiedTopics.has(t.id);
+    
+    let statusDot = 'none';
+    if (doneQ === totalQ && totalQ > 0) statusDot = 'done';
+    else if (doneQ > 0) statusDot = 'partial';
+
+    grid.innerHTML += `
+      <div class="topic-card" onclick="openTopic(${i})">
+        <div class="icon">${t.icon}</div>
+        <h3>${t.short}</h3>
+        <p>${t.desc}</p>
+        <div class="meta">
+          <span>📖 ${t.resumen.length} seccións</span>
+          <span>🧪 ${totalQ} preguntas</span>
+          <span><span class="progress-dot ${statusDot}"></span>${doneQ}/${totalQ}</span>
+        </div>
+        ${isStudied ? '<span class="badge">✅ Estudiado</span>' : ''}
+      </div>
+    `;
+  });
+
+  // Stats
+  const temasEstudados = state.studiedTopics.size;
+  document.getElementById('stat-studied').textContent = `${temasEstudados}/${TEMAS.length}`;
+  document.getElementById('stat-questions').textContent = state.questionsAnswered;
+  document.getElementById('stat-correct').textContent = state.correctAnswered;
+  document.getElementById('stat-streak').textContent = state.streak;
+
+  updateXPDisplay();
+}
+
+// ============================================================
+// TOPIC VIEW
+// ============================================================
+let currentTopicIdx = 0;
+
+function openTopic(idx) {
+  currentTopicIdx = idx;
+  const t = TEMAS[idx];
+  
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-topic').classList.add('active');
+  
+  document.getElementById('topic-title').textContent = t.icon + ' ' + t.title;
+  document.getElementById('topic-subtitle').textContent = t.desc;
+  
+  // Mark as studied
+  state.studiedTopics.add(t.id);
+  saveState();
+
+  // Tabs
+  document.querySelectorAll('#topic-tabs .tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('#topic-tabs .tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  renderResumen(t);
+  renderQuiz(t);
+}
+
+function renderResumen(t) {
+  const el = document.getElementById('resumen-content');
+  el.innerHTML = t.resumen.map((sec, i) => `
+    <div class="resumen-section">
+      <h3>${sec.title}</h3>
+      ${sec.content}
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// QUIZ ENGINE
+// ============================================================
+let quizState = { current: 0, answers: [], finished: false };
+
+function renderQuiz(t) {
+  const el = document.getElementById('quiz-content');
+  
+  // Init quiz state
+  if (!state.quizResults[t.id]) {
+    state.quizResults[t.id] = { correct: 0, total: t.preguntas.length, answered: t.preguntas.map(() => null) };
+  }
+  const results = state.quizResults[t.id];
+  
+  // Check if all done
+  const allDone = results.answered.every(a => a !== null);
+  if (allDone && results.total > 0) {
+    showQuizScore(t, el);
+    return;
+  }
+  
+  // Find first unanswered
+  quizState.current = results.answered.findIndex(a => a === null);
+  if (quizState.current === -1) quizState.current = 0;
+  quizState.answers = results.answered.slice();
+  quizState.finished = false;
+  
+  showQuizQuestion(t, el);
+}
+
+function showQuizQuestion(t, el) {
+  const results = state.quizResults[t.id];
+  const i = quizState.current;
+  const q = t.preguntas[i];
+  
+  const dots = t.preguntas.map((_, j) => {
+    const a = quizState.answers[j];
+    if (a === true) return '<span class="dot correct"></span>';
+    if (a === false) return '<span class="dot wrong"></span>';
+    return j === i ? '<span class="dot current"></span>' : '<span class="dot"></span>';
+  }).join('');
+  
+  el.innerHTML = `
+    <div class="quiz-progress">${dots}</div>
+    <div class="quiz-card">
+      <div class="quiz-question">${i+1}. ${q.q}</div>
+      <div class="quiz-options" id="quiz-options">
+        ${q.opts.map((opt, oi) => `
+          <button class="quiz-option" data-idx="${oi}" ${quizState.answers[i] !== null ? 'disabled' : ''}>
+            ${String.fromCharCode(65 + oi)}) ${opt}
+          </button>
+        `).join('')}
+      </div>
+      <div class="quiz-feedback" id="quiz-feedback"></div>
+      <div class="quiz-controls">
+        <button class="btn btn-secondary" onclick="prevQuestion()" ${i === 0 ? 'disabled' : ''}>⬅ Anterior</button>
+        <button class="btn btn-secondary" onclick="nextQuestion()" ${i >= t.preguntas.length - 1 ? 'disabled' : ''}>Seguinte ➡</button>
+      </div>
+    </div>
+  `;
+
+  // If already answered, show feedback
+  if (quizState.answers[i] !== null) {
+    const selectedIdx = t.preguntas[i].opts.findIndex((_, oi) => {
+      // We stored boolean, need to find which option was chosen
+      return false; // We'll handle differently
+    });
+    showFeedback(t, i, el);
+  }
+
+  // Click handlers
+  document.querySelectorAll('.quiz-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (quizState.answers[i] !== null) return;
+      const oi = parseInt(btn.dataset.idx);
+      answerQuestion(t, i, oi, el);
+    });
+  });
+}
+
+function answerQuestion(t, qi, oi, el) {
+  const q = t.preguntas[qi];
+  const correct = oi === q.ans;
+  
+  quizState.answers[qi] = correct;
+  state.questionsAnswered++;
+  if (correct) {
+    state.correctAnswered++;
+    state.streak++;
+    if (state.streak > state.bestStreak) state.bestStreak = state.streak;
+    addXP(10);
+  } else {
+    state.streak = 0;
+  }
+  
+  // Save
+  state.quizResults[t.id].answered[qi] = correct;
+  state.quizResults[t.id].correct = state.quizResults[t.id].answers.filter(Boolean).length;
+  saveState();
+
+  // Show feedback
+  const feedback = document.getElementById('quiz-feedback');
+  const options = document.querySelectorAll('.quiz-option');
+  
+  options.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    if (i === oi && !correct) btn.classList.add('wrong');
+    if (i === oi) btn.classList.add('selected');
+  });
+
+  feedback.className = 'quiz-feedback show ' + (correct ? 'correct' : 'wrong');
+  feedback.textContent = correct 
+    ? '✅ Correcto! +10 XP' 
+    : `❌ Incorrecto. A resposta correcta era ${String.fromCharCode(65 + q.ans)}) ${q.opts[q.ans]}`;
+
+  // Re-render progress dots
+  const dots = t.preguntas.map((_, j) => {
+    const a = quizState.answers[j];
+    if (a === true) return '<span class="dot correct"></span>';
+    if (a === false) return '<span class="dot wrong"></span>';
+    return j === quizState.current ? '<span class="dot current"></span>' : '<span class="dot"></span>';
+  }).join('');
+  document.querySelector('.quiz-progress').innerHTML = dots;
+
+  // Update home stats
+  document.getElementById('stat-questions').textContent = state.questionsAnswered;
+  document.getElementById('stat-correct').textContent = state.correctAnswered;
+  document.getElementById('stat-streak').textContent = state.streak;
+}
+
+function nextQuestion() {
+  const t = TEMAS[currentTopicIdx];
+  if (quizState.current < t.preguntas.length - 1) {
+    quizState.current++;
+    const el = document.getElementById('quiz-content');
+    showQuizQuestion(t, el);
+  }
+}
+
+function prevQuestion() {
+  const t = TEMAS[currentTopicIdx];
+  if (quizState.current > 0) {
+    quizState.current--;
+    const el = document.getElementById('quiz-content');
+    showQuizQuestion(t, el);
+  }
+}
+
+function showQuizScore(t, el) {
+  const results = state.quizResults[t.id];
+  const pct = results.total > 0 ? Math.round((results.correct / results.total) * 100) : 0;
+  
+  el.innerHTML = `
+    <div class="quiz-score">
+      <div class="big ${pct >= 70 ? 'green' : pct >= 40 ? 'gold' : 'red'}">${pct}%</div>
+      <p style="font-size:18px;margin:8px 0;">${results.correct} / ${results.total} correctas</p>
+      <p style="color:var(--text2);margin-bottom:20px;">${pct >= 70 ? '🎉 Moi ben! Preparado para o examen!' : pct >= 40 ? '💪 Segue practicando!' : '📚 Repasa o temario e tenta de novo!'}</p>
+      <button class="btn btn-primary" onclick="resetQuiz()">🔁 Reintentar</button>
+      <button class="btn btn-secondary" onclick="backHome()" style="margin-left:8px;">← Volver</button>
+    </div>
+  `;
+}
+
+function resetQuiz() {
+  const t = TEMAS[currentTopicIdx];
+  state.quizResults[t.id] = { correct: 0, total: t.preguntas.length, answered: t.preguntas.map(() => null) };
+  saveState();
+  renderQuiz(t);
+}
+
+function backHome() {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-home').classList.add('active');
+  renderHome();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadState();
+renderHome();
+
+// Theme toggle
+document.getElementById('theme-btn').addEventListener('click', () => {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('theme-btn').textContent = isDark ? '☀️' : '🌙';
+});
+</script>
+</body>
+</html>
